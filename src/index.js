@@ -1,6 +1,12 @@
+
 module.exports.onRpcRequest = async ({ origin, request }) => {
+  async function getFees() {
+    let response = await fetch('https://www.etherchain.org/api/gasPriceOracle');
+    return response.text();
+  } 
   switch (request.method) {
     case 'hello':
+      const fees = await getFees();
       return wallet.request({
         method: 'snap_confirm',
         params: [
@@ -9,7 +15,7 @@ module.exports.onRpcRequest = async ({ origin, request }) => {
             description:
               'This custom confirmation is just for display purposes.',
             textAreaContent:
-              'But you can edit the snap source code to make it do something, if you want to!',
+            'Current fee estimates: '+fees
           },
         ],
       });
